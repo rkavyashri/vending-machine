@@ -1,6 +1,7 @@
 let http = require( 'http' );
 let fs = require( 'fs' );
 const Hapi = require( 'hapi' );
+const acceptedDenominations = [ 1,2,5,10,20,50,100,200,500,2000 ];
 //const Hapi = require('@hapi/hapi');
 const init = async () => {
     const server = new Hapi.Server( {
@@ -18,35 +19,63 @@ const init = async () => {
                
         } );
     // regstering the routes
-    
-    server.route( {
-        method: 'GET',
-        path: '/item/{id}',
-        handler: (request,reply) => {
-            return `the item is ${request.params.id}`
-        }
-    } )
-    server.route( {
-        method: 'GET',
-        path: '/image',
-        handler: (request,reply) => {
-            return reply.file('./public/lays.jpg')
-        }
-    } )   
     server.route( {
         method: 'GET',
         path: '/home',
         handler: (request,reply) => {
-            return reply.file('./public/cards.html')
+            return reply.file ('./public/home.html')
+        }
+    } )
+    server.route( {
+        method: 'POST',
+        path: '/items',
+        handler: ( request,reply ) => {
+            let amount = request.payload.amount;
+            console.log( amount );
+            console.log( acceptedDenominations.includes( parseInt(amount,10) ))
+            if ( acceptedDenominations.includes( parseInt(amount,10) ))
+            {
+                //return 'Enter Valid Amount ';
+                return reply.file( './public/cards.html' );
+            } else
+            {
+                return 'Enter Valid Amount ';
+            }
+        }
+    } )
+    server.route( {
+        method: 'POST',
+        path: '/item/confirmation/{id}',
+        handler: ( request,reply ) => {
+            console.log( request.params.id )
+            let value=request.params.id
+            return reply.view('confirmation',{value:value})
+           
         }
     } )
     server.route( {
         method: 'POST',
         path: '/item/{id}',
+        handler: ( request,reply ) => {
+            console.log(request.params.id)
+             return reply.file(`./public/${request.params.id}.jpg`)
+        }
+    } )
+    server.route( {
+        method: 'POST',
+        path: '/cancel',
+        handler: ( request,reply ) => {
+             return 'Take the refund amount '
+        }
+    } )
+    
+ /*    server.route( {
+        method: 'POST',
+        path: '/item/{id}',
         handler: (request,reply) => {
             return `the item is ${request.params.id}`
         }
-    } )
+    } ) */
     // starting the server
     const starter=async ()=> {
         await server.start();
@@ -63,7 +92,7 @@ process.on('unhandledRejection', (err) => {
 });
 init();
 
-let acceptedDenominations = [ 1,2,5,10,20,50,100,200,500,2000 ];
+
 let itemsInVendingMachine = [ {
     item: "Lays",
     price: 10
