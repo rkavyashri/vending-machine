@@ -29,7 +29,7 @@ body {
 }
 
 .image img {
-    width: 1%;
+    width: 50%;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }

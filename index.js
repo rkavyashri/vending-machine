@@ -1,5 +1,68 @@
 let http = require( 'http' );
 let fs = require( 'fs' );
+const Hapi = require( 'hapi' );
+//const Hapi = require('@hapi/hapi');
+const init = async () => {
+    const server = new Hapi.Server( {
+        host: 'localhost',
+        port: 3000
+    } );
+    await server.register( require( 'inert' ) );
+    await server.register( require( 'vision' ) );
+    server.views( {
+            engines: {
+                html: require( 'handlebars' )
+        },
+        relativeTo: __dirname,
+        path: 'views'
+               
+        } );
+    // regstering the routes
+    
+    server.route( {
+        method: 'GET',
+        path: '/item/{id}',
+        handler: (request,reply) => {
+            return `the item is ${request.params.id}`
+        }
+    } )
+    server.route( {
+        method: 'GET',
+        path: '/image',
+        handler: (request,reply) => {
+            return reply.file('./public/lays.jpg')
+        }
+    } )   
+    server.route( {
+        method: 'GET',
+        path: '/home',
+        handler: (request,reply) => {
+            return reply.file('./public/cards.html')
+        }
+    } )
+    server.route( {
+        method: 'POST',
+        path: '/item/{id}',
+        handler: (request,reply) => {
+            return `the item is ${request.params.id}`
+        }
+    } )
+    // starting the server
+    const starter=async ()=> {
+        await server.start();
+        console.log('Server Running at Port ',3000 )
+    }
+    setTimeout(starter,30 )
+      
+}
+
+process.on('unhandledRejection', (err) => {
+
+    console.log(err);
+    process.exit(1);
+});
+init();
+
 let acceptedDenominations = [ 1,2,5,10,20,50,100,200,500,2000 ];
 let itemsInVendingMachine = [ {
     item: "Lays",
@@ -70,12 +133,12 @@ async function filterItemsByPrice (inputAmount,items) {
         throw err;
     }
 }
-    var server=http.createServer( function ( req,res ) {
+   /*  var server=http.createServer( function ( req,res ) {
         res.writeHead( 200,{ 'Content-Type': 'text/html' } );
         var readStream = fs.createReadStream( __dirname + '/index.html','utf8' );
         readStream.pipe( res );
     } )
-server.listen( 1000,'127.0.0.1' )
-console.log('Server Running at Port ',1000 )
+server.listen( 1000,'127.0.0.1' ) */
 
-venderMachine()
+
+//venderMachine()
