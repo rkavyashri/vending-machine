@@ -1,6 +1,7 @@
 let http = require( 'http' );
 let fs = require( 'fs' );
 const Hapi = require( 'hapi' );
+const Path =require('path')
 const acceptedDenominations = [ 1,2,5,10,20,50,100,200,500,2000 ];
 //const Hapi = require('@hapi/hapi');
 const init = async () => {
@@ -10,14 +11,15 @@ const init = async () => {
     } );
     await server.register( require( 'inert' ) );
     await server.register( require( 'vision' ) );
+    const viewsPath = Path.resolve(__dirname,'public','views')
     server.views( {
             engines: {
-                html: require( 'handlebars' )
+            html: require( 'handlebars' )
         },
-        relativeTo: __dirname,
+        relativeTo:Path.join(__dirname,'public'),
         path: 'views'
                
-        } );
+    } );
     // regstering the routes
     server.route( {
         method: 'GET',
@@ -36,7 +38,7 @@ const init = async () => {
             if ( acceptedDenominations.includes( parseInt(amount,10) ))
             {
                 //return 'Enter Valid Amount ';
-                return reply.file( './public/cards.html' );
+                return reply.view( 'cards',{amount:amount} );
             } else
             {
                 return 'Enter Valid Amount ';
@@ -58,7 +60,7 @@ const init = async () => {
         path: '/item/{id}',
         handler: ( request,reply ) => {
             console.log(request.params.id)
-             return reply.file(`./public/${request.params.id}.jpg`)
+             return reply.file(`./public/images/${request.params.id}.jpg`)
         }
     } )
     server.route( {
@@ -68,7 +70,30 @@ const init = async () => {
              return 'Take the refund amount '
         }
     } )
-    
+    server.route( {
+        method: 'GET',
+        path: '/css/{path*}',
+        handler:  {
+            directory: {
+                path: "./public/css",
+                    listing: false,
+                        index: false
+            }
+        
+        }
+    } )
+    server.route( {
+        method: 'GET',
+        path: '/images/{path*}',
+        handler:  {
+            directory: {
+                path: "./public/images",
+                    listing: false,
+                        index: false
+            }
+        
+        }
+    } )
  /*    server.route( {
         method: 'POST',
         path: '/item/{id}',
