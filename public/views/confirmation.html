@@ -2,11 +2,11 @@
 <html>
     <body>
         <h1>Confirmation</h1>
-    <form method='POST' action='/item/{{value}}'>
+    <form method='POST' action='/deliver/{{amount}}/{{item}}'>
     <button > Get the item </button>
     </form> 
-    <form method='POST' action='/cancel'>
-    <button> Cancel Order </button>{{value}}
+    <form method='POST' action='/cancel/{{amount}}'>
+    <button> Cancel Order </button>
     </form> 
     </body>
     </html>
