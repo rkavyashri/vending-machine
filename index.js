@@ -81,7 +81,6 @@ const init = async () => {
             let amountPaid = request.params.amount;
             let item = request.params.item;
            let itemPrice= itemsInVendingMachine.find(x => x.item === item)
-          //  let itemPrice = _.find( itemsInVendingMachine,{ 'item': item } )
             if ( Number( amountPaid ) < itemPrice.price )
             {
                 return `Item Price is - ${itemPrice.price} inserted amount is - ${amountPaid}. Try again with higher amount`;

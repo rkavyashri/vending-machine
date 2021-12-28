@@ -60,10 +60,9 @@ POST /items
 
 Parameters
 ```json
-{
-    'amount':'value entered in previous screen'
-}
+amount:"amount paid by the user"
 ```
+
 Response
 
 ```html
